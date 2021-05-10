@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 var s3 = new AWS.S3();
 
 
-exports.handler = (event, context, callback) => {
+exports.handler = async (event, context, callback) => {
         let recieved_request =JSON.stringify(event.img);
         let recieved_request_imageId =JSON.stringify(event.imageID);
         let recieved_request_ext =JSON.stringify(event.fileExt);
@@ -13,28 +13,29 @@ exports.handler = (event, context, callback) => {
         let buffer = Buffer.from(recieved_request.replace(/^data:image\/\w+;base64,/, ""),'base64'); 
         
         
-        var params = {
-                Key: filePath, 
-                Body: buffer,
-                ContentEncoding: 'base64',
-                ContentType: 'image/jpeg',
-                Bucket: "react-ap-webapp-images"
-        };
+      
+          AWS.config.region = "us-east-1";
+  //AWS.config.update({ region: 'us-east-1' });
+  var textract = new AWS.Textract({ apiVersion: "2018-06-27" });
+  //var textract = new AWS.Textract();
+  console.log(textract);
      
-   
-   
-       s3.upload(params, function(err, data){
-       if(err) {
-           callback(err, null);
-       } else {
-         var res ={
-                "statusCode": 200,
+     var params = {
+    Document: {
+      /* required */
+      'Bytes': buffer
+    
+    }
+  };
+  const data = await textract.detectDocumentText(params).promise();
+   var res ={
+          "statusCode": 200,
                 "headers": {
                     "Content-Type": "application/json"
                 }
             };
-            res.body = "Uploaded";
-            callback(null, res);
-        }
-    });
+            res.body = data;
+  return res;
+   
+     
 };

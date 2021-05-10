@@ -58,7 +58,7 @@ class Upload extends Component {
         body: JSON.stringify(targetImage)
     });
     console.log('OCRBODY',response);
-    const OCRBODY = response.body;
+    const OCRBODY = response.json();
     console.log('OCRBODY',OCRBODY);
 }
 
