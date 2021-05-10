@@ -40,7 +40,7 @@ class Upload extends Component {
         folder: UID,
         img: this.state.files[0].base64
     }
-    await fetch("https://8zui4edo90.execute-api.us-east-1.amazonaws.com/Production",{
+    const response =  await fetch("https://8zui4edo90.execute-api.us-east-1.amazonaws.com/Production",{
         method: 'POST',
         headers: {
             Accept: 'applicatin/json',
@@ -48,16 +48,7 @@ class Upload extends Component {
         },
         body: JSON.stringify(data)
     });
-    const targetImage = UID+'.jpg';
- const response =   await fetch("https://8zui4edo90.execute-api.us-east-1.amazonaws.com/Production/ocr",{
-        method: 'POST',
-        headers: {
-            Accept: 'applicatin/json',
-            "Content-Type": 'application.json'
-        },
-        body: JSON.stringify(targetImage)
-    });
-    console.log('OCRBODY',response);
+ 
     const OCRBODY = response.json();
     console.log('OCRBODY',OCRBODY);
 }
